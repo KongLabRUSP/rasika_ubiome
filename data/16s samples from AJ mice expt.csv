@@ -1,0 +1,37 @@
+Sample,Treatment,ID,Week
+1,Vehicle control (VC),2L,Week 4
+2,Vehicle control (VC),R,Week 4
+3,Vehicle control (VC),O,Week 4
+4,NNK control,2L,Week 4
+5,NNK control,B,Week 4
+6,NNK control,R,Week 4
+7,NNK+DAS,O,Week 4
+8,NNK+DAS,L,Week 4
+9,NNK+DAS,R,Week 4
+10,Vehicle control (VC),2L,Week2
+11,Vehicle control (VC),R,Week2
+12,Vehicle control (VC),O,Week2
+13,NNK control,2L,Week2
+14,NNK control,B,Week2
+15,NNK control,R,Week2
+16,NNK+DAS,O,Week2
+17,NNK+DAS,L,Week2
+18,NNK+DAS,R,Week2
+19,Vehicle control (VC),2L,Week1
+20,Vehicle control (VC),R,Week1
+21,Vehicle control (VC),O,Week1
+22,NNK control,2L,Week1
+23,NNK control,B,Week1
+24,NNK control,R,Week1
+25,NNK+DAS,O,Week1
+26,NNK+DAS,L,Week1
+27,NNK+DAS,R,Week1
+28,Vehicle control (VC),2L,Week0
+29,Vehicle control (VC),R,Week0
+30,Vehicle control (VC),O,Week0
+31,NNK control,2L,Week0
+32,NNK control,B,Week0
+33,NNK control,R,Week0
+34,NNK+DAS,O,Week0
+35,NNK+DAS,L,Week0
+36,NNK+DAS,R,Week0
