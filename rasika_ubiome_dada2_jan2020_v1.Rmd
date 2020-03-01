@@ -6,7 +6,7 @@ output:
     toc_float: yes
 ---
 Date: `r date()`     
-Scientist: [Ran Yin](mailto:ry147@scarletmail.rutgers.edu)      
+Scientist: [Rasika Hudlikar](rasikahudlikar@gmail.com)      
 Sequencing (Waksman): [Dibyendu Kumar](mailto:dk@waksman.rutgers.edu) (?)      
 Statistics: [Davit Sargsyan](mailto:sargdavid@gmail.com)      
 Principal Investigator: [Ah-Ng Kong](mailto:kongt@pharmacy.rutgers.edu)      
@@ -16,9 +16,21 @@ Principal Investigator: [Ah-Ng Kong](mailto:kongt@pharmacy.rutgers.edu)
 This script was developed using [DADA2 Pipeline Tutorial (1.12)](https://benjjneb.github.io/dada2/tutorial.html) with tips and tricks from the [University of Maryland Shool of Medicine Institute for Genome Sciences (IGS)](http://www.igs.umaryland.edu/) [Microbiome Analysis Workshop (April 8-11, 2019)](http://www.igs.umaryland.edu/education/wkshp_metagenome.php).
   
 ## Data 
-FastQ files were downloaded from [this Rutgers Box location](https://rutgers.app.box.com/folder/90143462291). A total of 144 files (2 per sample, pair-ended) and a pair of undetermined reads were downloaded.  
+FastQ files were downloaded from [Rutgers Box](https://rutgers.app.box.com/folder/99758165982). A total of 72 files (2 per sample, pair-ended) were downloaded.  
   
-***16s metadata Sep-2019.xlsx*** meta-data file was created by Ran. It was saved as .CSV file and used by this script.  
+***16s samples from AJ mice expt.xlsx*** meta-data file was created by Ran. It was saved as .CSV file and used by this script.  
+
+# Study Design (RASIKA TO CHECK!)
+A/J inbred mice from the Jackson Laboratory are used to model cancer and for carcinogen testing given their high susceptibility to carcinogen-induced tumors.  
+  
+From [Cayman Chemical](https://www.caymanchem.com/product/20894/diallyl-sulfide):Diallyl sulfide is a thioether found in garlic that can modulate the cytochrome P450 drug metabolizing system, activate the constitutive androstane receptor to regulate multidrug resistance-associated proteins, and upregulate the expression of detoxifying enzymes. Garlic-derived organosulfides such as diallyl sulfide have been shown to be highly protective from chemically-induced carcinogenesis in animals.  
+  
+Nicotine-derived nitrosamine ketone (NNK) is one of the key tobacco-specific nitrosamines derived from nicotine. It plays an important role in carcinogenesis.  
+  
+Nine (9) A/J mice were used in this study, 3 in each of the 3 treatment groups: Vehicle control (VC), NNK control and NNK+DAS. The study design is as follows:  
+![](docs/aj_mice_nnk_study _design.png)  
+  
+DAS in corn oil was force-fed to mice throghout the study (weeks 0 to 6). A single dose of 24uM/0.1mL NNK suspended in glyceryl trioctate vehicle was injected at Week 1 intraperetoneally (IP). The vehicvle control group received vehicle only. Fecal samples were collected at 4 timepoints: before DAS treatment began (Week 0), and 1, 2 and 4 weeks after pretreatment (Week 1, Week 2 and Week 4 respectively).  
   
 # Load libraries
 ```{r setup, include = FALSE}
@@ -65,7 +77,7 @@ path <- "fastq_jan2020"
 ```{r meta_data}
 # dt.meta <- fread("data_jan2020/16s metadata Sep-2019.csv")
 # save(dt.meta,
-#      file = "data_sep2019/dt.meta.RData")
+#      file = "data_jan2020/dt.meta.RData")
 # datatable(dt.meta,
 #           caption = "Table 1: Meta-Data",
 #           rownames = FALSE,
@@ -173,8 +185,8 @@ plotQualityProfile(filtRs[1])
 #                         pattern="_R1_001.fastq",
 #                         full.names = TRUE))
 # filtFs <- gsub(x = fnFs,
-#                pattern = "fastq_sep2019/",
-#                replacement = "filtered_sep2019/")
+#                pattern = "fastq_jan2020/",
+#                replacement = "filtered_jan2020/")
 
 system.time(errF <- learnErrors(filtFs, 
                                 multithread = FALSE))
@@ -187,13 +199,13 @@ save(errF,
 #                         pattern="_R2_001.fastq",
 #                         full.names = TRUE))
 # filtRs <- gsub(x = fnRs,
-#                pattern = "fastq_sep2019/",
-#                replacement = "filtered_sep2019/")
+#                pattern = "fastq_jan2020/",
+#                replacement = "filtered_jan2020/")
 
 system.time(errR <- learnErrors(filtRs, 
                                 multithread = FALSE))
 save(errR,
-     file = "data_sep2019/errR.RData")
+     file = "data_jan2020/errR.RData")
 ```
 
 # Plot learn the error rates
@@ -211,13 +223,13 @@ plotErrors(errR,
 #                         pattern="_R1_001.fastq", 
 #                         full.names = TRUE))
 # filtFs <- gsub(x = fnFs,
-#                pattern = "fastq_sep2019/",
-#                replacement = "filtered_sep2019/")
+#                pattern = "fastq_jan2020/",
+#                replacement = "filtered_jan2020/")
 
 system.time(derepFs <- derepFastq(filtFs, 
                                   verbose = TRUE))
 save(derepFs,
-     file = "data_sep2019/derepFs.RData")
+     file = "data_jan2020/derepFs.RData")
 
 head(derepFs)
 gc()
@@ -228,13 +240,13 @@ gc()
 #                         pattern="_R2_001.fastq",
 #                         full.names = TRUE))
 # filtRs <- gsub(x = fnRs,
-#                pattern = "fastq_sep2019/",
-#                replacement = "filtered_sep2019/")
+#                pattern = "fastq_jan2020/",
+#                replacement = "filtered_jan2020/")
 
 system.time(derepRs <- derepFastq(filtRs, 
                                   verbose = TRUE))
 save(derepRs,
-     file = "data_sep2019/derepRs.RData")
+     file = "data_jan2020/derepRs.RData")
 
 head(derepRs)
 gc()
@@ -248,33 +260,33 @@ By default, the ***dada*** function processes each sample independently, but poo
      
 All samples are simultaneously loaded into memory by default. If the datasets approach or exceed available RAM, it is preferable to process samples one-by-one in a streaming fashion: see [DADA2 Workflow on Big Data](https://benjjneb.github.io/dada2/bigdata.html) for an example.    
 ```{r dada_fs}
-# load("data_sep2019/errF.RData")
-# load("data_sep2019/derepFs.RData")
+# load("data_jan2020/errF.RData")
+# load("data_jan2020/derepFs.RData")
 
 system.time(dadaFs <- dada(derep = derepFs, 
                            err = errF,
                            multithread = TRUE))
 save(dadaFs,
-     file = "data_sep2019/dadaFs.RData")
+     file = "data_jan2020/dadaFs.RData")
 ```
 
 ```{r dada_rs}
-# load("data_sep2019/errR.RData")
-# load("data_sep2019/derepRs.RData")
+# load("data_jan2020/errR.RData")
+# load("data_jan2020/derepRs.RData")
 
 system.time(dadaRs <- dada(derep = derepRs, 
                            err = errR,
                            multithread = TRUE))
 save(dadaRs,
-     file = "data_sep2019/dadaRs.RData")
+     file = "data_jan2020/dadaRs.RData")
 ```
 
 # Merge paired reads
 ```{r merge,warnings=FALSE,echo=FALSE,message=FALSE,eval=TRUE}
-# load("data_sep2019/dadaFs.RData")
-# load("data_sep2019/derepFs.RData")
-# load("data_sep2019/dadaRs.RData")
-# load("data_sep2019/derepRs.RData")
+# load("data_jan2020/dadaFs.RData")
+# load("data_jan2020/derepFs.RData")
+# load("data_jan2020/dadaRs.RData")
+# load("data_jan2020/derepRs.RData")
 
 system.time(mergers <- mergePairs(dadaF = dadaFs,
                                   derepF = derepFs,
@@ -282,18 +294,18 @@ system.time(mergers <- mergePairs(dadaF = dadaFs,
                                   derepR = derepRs,
                                   verbose = TRUE))
 save(mergers,
-     file = "data_sep2019/mergers.RData")
+     file = "data_jan2020/mergers.RData")
 ```
 
 # Make a sequence table for chimera removal
 ```{r chimera,warnings=FALSE,echo=FALSE,message=FALSE,eval=TRUE}
-# load("data_sep2019/mergers.RData")
+# load("data_jan2020/mergers.RData")
 
 system.time(seqtab <- makeSequenceTable(mergers))
 
 dim(seqtab)
 save(seqtab,
-     file = "data_sep2019/seqtab.RData")
+     file = "data_jan2020/seqtab.RData")
 gc()
 
 # Remove chimeras
@@ -304,9 +316,9 @@ system.time(seqtab.nochim <- removeBimeraDenovo(unqs = seqtab,
 
 dim(seqtab.nochim) 
 save(seqtab.nochim,
-     file = "data_may2019/seqtab.nochim.RData")
+     file = "data_jan2020/seqtab.nochim.RData")
 write.csv(seqtab.nochim, 
-          file = "data_may2019/seqtab.nochim.csv", 
+          file = "data_jan2020/seqtab.nochim.csv", 
           quote = FALSE)
 
 # 1 - proportion of chimeras
@@ -316,17 +328,17 @@ print(paste("Chimeras = ",
             sep = ""))
 ```
 
-**NOTE**: According to the IGS, denovo chimeras are determined based on most abundant sequencins in a given data. Usually 5-7% of sequences are chimeras. It is much higher in this dataset (60.4%). IGS recommends revisiting the removal of primers, as the ambiguous nucleotides in unremoved primers interfere with chimera identification. 
+**NOTE**: According to the IGS, denovo chimeras are determined based on most abundant sequencins in a given data. Usually 5-7% of sequences are chimeras. It is much higher in this dataset (44.5%). IGS recommends revisiting the removal of primers, as the ambiguous nucleotides in unremoved primers interfere with chimera identification. 
 
 ## Number of reads per sample throughout processing
 ```{r check_length}
-# load("data_sep2019/out.RData")
-# load("data_sep2019/dadaFs.RData")
+# load("data_jan2020/out.RData")
+# load("data_jan2020/dadaFs.RData")
 # fnFs <- sort(list.files(path,
 #                         pattern="_R1_001.fastq",
 #                         full.names = TRUE))
 # sample.names <- gsub(x = fnFs,
-#                      pattern = "fastq_sep2019/",
+#                      pattern = "fastq_jan2020/",
 #                      replacement = "")
 # sample.names <- sapply(strsplit(sample.names, "_"),
 #                        `[`, 
@@ -360,7 +372,7 @@ IGS suggests the number of **merged** sequences can potentially be increased by 
 # Save amplicon sequence variants (ASV) as a FastA file
 Write out and save your results thus far: 
 ```{r save_fasta_asv}
-fc <- file("data_sep2019/all_runs_dada2_ASV.fasta")
+fc <- file("data_jan2020/all_runs_dada2_ASV.fasta")
 fltp <- character()
 for( i in 1:ncol(seqtab)) {
   fltp <- append(fltp, 
@@ -380,13 +392,13 @@ gc()
 # Assign taxonomy
 **NOTE**: create ***taxa.RData*** once, then comment it out and load the R data file to when reruning the code. 
 ```{r tax_assign}
-# taxa <- assignTaxonomy(seqs = seqtab.nochim,
-#                        refFasta = "tax/silva_nr_v132_train_set.fa",
-#                        multithread = mt)
-# save(taxa,
-#      file = "data_sep2019/taxa.RData")
+taxa <- assignTaxonomy(seqs = seqtab.nochim,
+                       refFasta = "tax/silva_nr_v132_train_set.fa",
+                       multithread = mt)
+save(taxa,
+     file = "data_jan2020/taxa.RData")
 
-load("data_sep2019/taxa.RData")
+# load("data_jan2020/taxa.RData")
 print(paste("Number of unique references =",
             format(nrow(taxa),
                    big.mark = ",")))
@@ -407,30 +419,30 @@ print(paste("Number of references matched in the data =",
 # save(taxa.plus,
 #      file = "data_may2019/taxa.plus.RData")
 # 
-# load("data_sep2019/taxa.plus.RData")
+# load("data_jan2020/taxa.plus.RData")
 ```
 
 ```{r phyloseq}
-load("data_sep2019/dt.meta.RData")
 dt.otu <- otu_table(seqtab.nochim, 
                     taxa_are_rows = FALSE)
 sample_names(dt.otu) <- sample.names
 print("Sample names in OTU table")
 sample_names(dt.otu)
 
+dt.meta <- fread("data_jan2020/16s samples from AJ mice expt.csv")
 metadata <- sample_data(dt.meta)
-rownames(metadata) <- metadata$SAMPLE_NAME
+rownames(metadata) <- metadata$Sample
 print("Sample names in metadata")
 sample_names(metadata)
 
 metadata@row.names <- sample_names(dt.otu)
 
-ps_sep2019 <- phyloseq(dt.otu, 
+ps_jan2020 <- phyloseq(dt.otu, 
                        metadata,
                        tax_table(taxa))
-sample_names(ps_sep2019)
-save(ps_sep2019,
-     file = "data_sep2019/ps_sep2019.RData")
+sample_names(ps_jan2020)
+save(ps_jan2020,
+     file = "data_jan2020/ps_jan2020.RData")
 ```
 
 # Session Information
